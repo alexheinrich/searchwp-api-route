@@ -61,11 +61,11 @@ class route extends \WP_REST_Posts_Controller {
 			),
 			'nopaging' => array(
 				'default' => 0,
-				'sanitize_callback' => array( $this, 'sanatize_bool' ),
+				'sanitize_callback' => array( $this, 'sanitize_bool' ),
 			),
 			'load_posts' => array(
 				'default' => 1,
-				'sanitize_callback' => array( $this, 'sanatize_bool' ),
+				'sanitize_callback' => array( $this, 'sanitize_bool' ),
 			),
 			'page' => array(
 				'default' => 1,
@@ -81,17 +81,17 @@ class route extends \WP_REST_Posts_Controller {
 			),
 			'tax_query' => array(
 				'default' => false,
-				'sanitize_callback' => array( $this, 'sanatize_array'),
+				'sanitize_callback' => array( $this, 'sanitize_array'),
 				'validate_callback' => array( $this, 'validate_tax_query' ),
 			),
 			'meta_query' => array(
 				'default' => false,
-				'sanitize_callback' => array( $this, 'sanatize_array'),
+				'sanitize_callback' => array( $this, 'sanitize_array'),
 				'validate_callback' => array( $this, 'validate_meta_query' ),
 			),
 			'date_query' => array(
 				'default' => false,
-				'sanitize_callback' => array( $this, 'sanatize_array'),
+				'sanitize_callback' => array( $this, 'sanitize_array'),
 				'validate_callback' => array( $this, 'validate_date_query' ),
 			),
 		);
@@ -243,7 +243,7 @@ class route extends \WP_REST_Posts_Controller {
 	 *
 	 * @return array
 	 */
-	public function sanatize_array( $array ) {
+	public function sanitize_array( $array ) {
 		if ( ! empty( $array ) ) {
 			array_walk( $array, function(&$n) {
 				if( is_null( $n ) ) {
@@ -446,7 +446,7 @@ class route extends \WP_REST_Posts_Controller {
 	 *
 	 * @return bool
 	 */
-	public function sanatize_bool( $maybe_bool ) {
+	public function sanitize_bool( $maybe_bool ) {
 		if ( is_int( $maybe_bool ) || is_string( $maybe_bool ) || is_bool( $maybe_bool ) ) {
 
 			if ( filter_var( $maybe_bool, FILTER_VALIDATE_BOOLEAN ) ) {
