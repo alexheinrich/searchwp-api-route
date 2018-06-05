@@ -145,6 +145,7 @@ class route extends \WP_REST_Posts_Controller {
 		$args = apply_filters( 'cwp_swp_api_search_args', $args, $request );
 
 
+
 		if ( ! empty( $args[ 's' ] ) &&  class_exists( "SWP_Query" ) ) {
 			$search = new \SWP_Query( $args );
 		}else{
@@ -251,7 +252,14 @@ class route extends \WP_REST_Posts_Controller {
 				}else{
 					if( is_array( $n ) ) {
 						foreach( $n as $key => $value ) {
-							$n[ $key ] = trim( strip_tags( stripslashes( $value ) ) );
+                            if( is_array( $value ) ) {
+                                foreach( $_n as $_value ) {
+                                    $_value = trim( strip_tags( stripslashes( $_value ) ) );
+                                }
+                                $n[ $key ] = $value;
+                            }else{
+                                $n[ $key ] = trim( strip_tags( stripslashes( $value ) ) );
+                            }
 						}
 					}else{
 						$n = trim( strip_tags( stripslashes( $n ) ) );
@@ -260,6 +268,7 @@ class route extends \WP_REST_Posts_Controller {
 				}
 			});
 		}
+
 
 		return $array;
 
@@ -298,6 +307,10 @@ class route extends \WP_REST_Posts_Controller {
 						$_GET[ 'meta_query' ][ 'compare' ][ $i ] = 'IN';
 					}
 
+					if( ! isset( $_GET[ 'meta_query' ][ 'type' ][ $i ] ) ) {
+						$_GET[ 'meta_query' ][ 'type' ][ $i ] = 'CHAR';
+					}
+
 					if( is_array( $_GET[ 'meta_query' ][ 'value' ] [ $i ] ) ) {
 						$value = array();
 						foreach($_GET[ 'meta_query' ][ 'value' ] [ $i ] as $_value  ) {
@@ -310,11 +323,13 @@ class route extends \WP_REST_Posts_Controller {
 					$meta_query[] = array(
 						'key' => strip_tags( $key ),
 						'value' => $value,
-						'compare' => strip_tags( strtoupper( $_GET['meta_query']['compare'][ $i ] ) )
+						'compare' => strip_tags( strtoupper( $_GET['meta_query']['compare'][ $i ] ) ),
+                        'type' => strip_tags( strtoupper( $_GET['meta_query']['type'][ $i ] ) )
 					);
 				}
 
 			}
+
 
 			if( isset( $meta_query[ 'key' ] ) ){
 				unset( $meta_query[ 'key' ] );
